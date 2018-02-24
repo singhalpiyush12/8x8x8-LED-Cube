@@ -70,6 +70,7 @@ void loop()
 for(int a=0;a<8;a++)
 l[a]=0;
   tetris();
+  //fig3(0,0);
 }
 void EveryOff()
 {
@@ -86,19 +87,25 @@ void stationary(int pillar,int level)
   l[level]++;
  /* for(int i=0;i<8;i++)
   {int a=0;registers[i]=HIGH;
-  	while(myvector[i][a]!=0)
-  		{registers[myvector[i][a]]=HIGH;
-  			a++;
-  		}
-  		writereg();
-  	a=0;registers[i]=LOW;
-  	while(myvector[i][a]!=0)
-  		{registers[myvector[i][a]]=LOW;
-  			a++;
-  		}
-  		writereg();	
+    while(myvector[i][a]!=0)
+      {registers[myvector[i][a]]=HIGH;
+        a++;
+      }
+      writereg();
+    a=0;registers[i]=LOW;
+    while(myvector[i][a]!=0)
+      {registers[myvector[i][a]]=LOW;
+        a++;
+      }
+      writereg(); 
   }
   */
+  if(l[level]==64)
+  {
+    l[level]=0;
+    for(int i=0;i<64;i++)
+    {myvector[level][i]=myvector[level-1][i];myvector[level-1][i]=0;}
+  }
 }
 void fig1(int m, int n)//one on in lower and all on in upper 
 { 
@@ -111,7 +118,7 @@ void fig1(int m, int n)//one on in lower and all on in upper
 
   while(p==true& Serial.available()==0)
   { int i=0;
-    while(i<1000)
+    while(i<100)
    { if(down)
     { for(int k=(26+(8*(n+4))+m);k<(30+(8*(n+4))+m);k++)
       registers[k]=LOW;
@@ -140,19 +147,19 @@ void fig1(int m, int n)//one on in lower and all on in upper
     }
     for(int i=0;i<8;i++)
   {int a=0;registers[i]=HIGH;
-  	while(myvector[i][a]!=0)
-  		{registers[myvector[i][a]]=HIGH;
-  			a++;
-  		}
-  		writereg();
-  	a=0;registers[i]=LOW;
-  	while(myvector[i][a]!=0)
-  		{registers[myvector[i][a]]=LOW;
-  			a++;
-  		}
-  		writereg();	
+    while(myvector[i][a]!=0)
+      {registers[myvector[i][a]]=HIGH;
+        a++;
+      }
+      writereg();
+    a=0;registers[i]=LOW;
+    while(myvector[i][a]!=0)
+      {registers[myvector[i][a]]=LOW;
+        a++;
+      }
+      writereg(); 
   }
-    registers[j+1]=LOW;
+    //registers[j+1]=LOW;
     registers[j]=HIGH;
     for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
     { for(int l=0;l<4;l++)
@@ -169,6 +176,10 @@ void fig1(int m, int n)//one on in lower and all on in upper
       }
     }
     registers[j+1]=HIGH;
+    writereg();
+    registers[j+1]=LOW;
+    for(int l=0;l<4;l++)
+      {int k=(26+(8*n)+m);registers[k+8*l]=LOW;}
     writereg();
     i++;
    }
@@ -207,7 +218,7 @@ void fig1comple(int m,int n)//one off on upper else on
   bool p=true;bool stop=false;
   while(p==true&Serial.available()==0)
   { int i=0;
-    while(i<1000)
+    while(i<100)
    { if(down)
     { for(int k=(26+(8*(n+4))+m);k<(30+(8*(n+4))+m);k++)
       registers[k]=LOW;
@@ -236,18 +247,27 @@ void fig1comple(int m,int n)//one off on upper else on
     }
     for(int i=0;i<8;i++)
   {int a=0;registers[i]=HIGH;
-  	while(myvector[i][a]!=0)
-  		{registers[myvector[i][a]]=HIGH;
-  			a++;
-  		}
-  		writereg();
-  	a=0;registers[i]=LOW;
-  	while(myvector[i][a]!=0)
-  		{registers[myvector[i][a]]=LOW;
-  			a++;
-  		}
-  		writereg();	
+    while(myvector[i][a]!=0)
+      {registers[myvector[i][a]]=HIGH;
+        a++;
+      }
+      writereg();
+    a=0;registers[i]=LOW;
+    while(myvector[i][a]!=0)
+      {registers[myvector[i][a]]=LOW;
+        a++;
+      }
+      writereg(); 
   }
+    //registers[j]=LOW;
+    registers[j+1]=HIGH;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=HIGH;
+      }
+    }
+    writereg();
     registers[j+1]=LOW;
     int k=(26+(8*n)+m);
     for(int l=0;l<4;l++)
@@ -256,15 +276,16 @@ void fig1comple(int m,int n)//one off on upper else on
     }
     registers[j]=HIGH;
     writereg();
+    
     registers[j]=LOW;
-    registers[j+1]=HIGH;
-    for(k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
     { for(int l=0;l<4;l++)
       {
-        registers[k+8*l]=HIGH;
+        registers[k+8*l]=LOW;
       }
     }
     writereg();
+
     i++;
    }
 
@@ -303,7 +324,7 @@ void fig2(int m,int n)//middle two on top layer on and base on
   bool p=true;bool stop=false;
   while(p==true&Serial.available()==0)
   { int i=0;
-    while(i<1000)
+    while(i<100)
    { if(down)
     { for(int k=(26+(8*(n+4))+m);k<(30+(8*(n+4))+m);k++)
       registers[k]=LOW;
@@ -332,18 +353,28 @@ void fig2(int m,int n)//middle two on top layer on and base on
     }
     for(int i=0;i<8;i++)
   {int a=0;registers[i]=HIGH;
-  	while(myvector[i][a]!=0)
-  		{registers[myvector[i][a]]=HIGH;
-  			a++;
-  		}
-  		writereg();
-  	a=0;registers[i]=LOW;
-  	while(myvector[i][a]!=0)
-  		{registers[myvector[i][a]]=LOW;
-  			a++;
-  		}
-  		writereg();	
+    while(myvector[i][a]!=0)
+      {registers[myvector[i][a]]=HIGH;
+        a++;
+      }
+      writereg();
+    a=0;registers[i]=LOW;
+    while(myvector[i][a]!=0)
+      {registers[myvector[i][a]]=LOW;
+        a++;
+      }
+      writereg(); 
   }
+    //registers[j]=LOW;
+    registers[j+1]=HIGH;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=HIGH;
+      }
+    }
+    writereg();
+
     registers[j+1]=LOW;
     int k=(26+(8*n)+m);
     for(int l=0;l<4;l++)
@@ -353,15 +384,17 @@ void fig2(int m,int n)//middle two on top layer on and base on
     }
     registers[j]=HIGH;
     writereg();
+    
+
     registers[j]=LOW;
-    registers[j+1]=HIGH;
     for(k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
     { for(int l=0;l<4;l++)
       {
-        registers[k+8*l]=HIGH;
+        registers[k+8*l]=LOW;
       }
     }
     writereg();
+
     i++;
    }
 
@@ -401,7 +434,7 @@ void fig2comple(int m, int n)//lower base middle off upper base all on
   bool p=true;bool stop=false;
   while(p==true&Serial.available()==0)
   { int i=0;
-    while(i<1000)
+    while(i<100)
    { if(down)
     { for(int k=(26+(8*(n+4))+m);k<(31+(8*(n+4))+m);k++)
       registers[k]=LOW;
@@ -430,19 +463,19 @@ void fig2comple(int m, int n)//lower base middle off upper base all on
     }
     for(int i=0;i<8;i++)
   {int a=0;registers[i]=HIGH;
-  	while(myvector[i][a]!=0)
-  		{registers[myvector[i][a]]=HIGH;
-  			a++;
-  		}
-  		writereg();
-  	a=0;registers[i]=LOW;
-  	while(myvector[i][a]!=0)
-  		{registers[myvector[i][a]]=LOW;
-  			a++;
-  		}
-  		writereg();	
+    while(myvector[i][a]!=0)
+      {registers[myvector[i][a]]=HIGH;
+        a++;
+      }
+      writereg();
+    a=0;registers[i]=LOW;
+    while(myvector[i][a]!=0)
+      {registers[myvector[i][a]]=LOW;
+        a++;
+      }
+      writereg(); 
   }
-    registers[j+1]=LOW;
+    //registers[j+1]=LOW;
     registers[j]=HIGH;
     for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
     { for(int l=0;l<4;l++)
@@ -460,6 +493,16 @@ void fig2comple(int m, int n)//lower base middle off upper base all on
     }
     registers[j+1]=HIGH;
     writereg();
+
+    registers[j+1]=LOW;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=LOW;
+      }
+    }
+    writereg();
+
     i++;
    }
 
@@ -498,7 +541,7 @@ void fig3(int m,int n)//middle two on top layer on and base on
   bool p=true;bool stop=false;
   while(p==true&Serial.available()==0)
   { int i=0;
-    while(i<1000)
+    while(i<100)
    { if(down)
     { for(int k=(26+(8*(n+4))+m);k<(30+(8*(n+4))+m);k++)
       registers[k]=LOW;
@@ -527,18 +570,27 @@ void fig3(int m,int n)//middle two on top layer on and base on
     }
     for(int i=0;i<8;i++)
   {int a=0;registers[i]=HIGH;
-  	while(myvector[i][a]!=0)
-  		{registers[myvector[i][a]]=HIGH;
-  			a++;
-  		}
-  		writereg();
-  	a=0;registers[i]=LOW;
-  	while(myvector[i][a]!=0)
-  		{registers[myvector[i][a]]=LOW;
-  			a++;
-  		}
-  		writereg();	
-  }
+    while(myvector[i][a]!=0)
+      {registers[myvector[i][a]]=HIGH;
+        a++;
+      }
+      writereg();
+    a=0;registers[i]=LOW;
+    while(myvector[i][a]!=0)
+      {registers[myvector[i][a]]=LOW;
+        a++;
+      }
+      writereg(); 
+  } 
+    //registers[j]=LOW;
+    registers[j+1]=HIGH;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=HIGH;
+      }
+    }
+    writereg();
     registers[j+1]=LOW;
     int k=(26+(8*n)+m);
     for(int l=0;l<4;l++)
@@ -553,15 +605,17 @@ void fig3(int m,int n)//middle two on top layer on and base on
 
     registers[j]=HIGH;
     writereg();
+    
+
     registers[j]=LOW;
-    registers[j+1]=HIGH;
     for(k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
     { for(int l=0;l<4;l++)
       {
-        registers[k+8*l]=HIGH;
+        registers[k+8*l]=LOW;
       }
     }
     writereg();
+
     i++;
    }
 
@@ -600,7 +654,7 @@ void fig3comple(int m, int n)//lower base middle off upper base all on
   bool p=true;bool stop=false;
   while(p==true&Serial.available()==0)
   { int i=0;
-    while(i<1000)
+    while(i<100)
    { if(down)
     { for(int k=(26+(8*(n+4))+m);k<(31+(8*(n+4))+m);k++)
       registers[k]=LOW;
@@ -629,19 +683,19 @@ void fig3comple(int m, int n)//lower base middle off upper base all on
     }
     for(int i=0;i<8;i++)
   {int a=0;registers[i]=HIGH;
-  	while(myvector[i][a]!=0)
-  		{registers[myvector[i][a]]=HIGH;
-  			a++;
-  		}
-  		writereg();
-  	a=0;registers[i]=LOW;
-  	while(myvector[i][a]!=0)
-  		{registers[myvector[i][a]]=LOW;
-  			a++;
-  		}
-  		writereg();	
+    while(myvector[i][a]!=0)
+      {registers[myvector[i][a]]=HIGH;
+        a++;
+      }
+      writereg();
+    a=0;registers[i]=LOW;
+    while(myvector[i][a]!=0)
+      {registers[myvector[i][a]]=LOW;
+        a++;
+      }
+      writereg(); 
   }
-    registers[j+1]=LOW;
+    //registers[j+1]=LOW;
     registers[j]=HIGH;
     for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
     { for(int l=0;l<4;l++)
@@ -659,6 +713,16 @@ void fig3comple(int m, int n)//lower base middle off upper base all on
     }
     registers[j+1]=HIGH;
     writereg();
+
+    registers[j+1]=LOW;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=LOW;
+      }
+    }
+    writereg();
+
     i++;
    }
 
