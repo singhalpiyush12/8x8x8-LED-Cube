@@ -81,6 +81,26 @@ void EveryOff()
       writereg();
     }  
 }
+void EveryOn()
+{
+  for(int i=0;i<72;i++)
+    {
+      registers[i]=HIGH;
+      //delay(100);
+      writereg();
+    }
+}
+void Flicker()
+{ EveryOff();
+  for(int i=0;i<10;i++)
+  {
+    EveryOn();
+    delay(10);
+    EveryOff();
+    delay(10);
+  }
+}
+
 void stationary(int pillar,int level)
 { 
   myvector[level][l[level]]=pillar;
@@ -109,6 +129,7 @@ void stationary(int pillar,int level)
   }for(int i=0;i<64;i++)
     {myvector[0][i]=0;}l[0]=0;
 }
+if(l[0]>0){Flicker();}
 }
 void display()
 {
@@ -1124,10 +1145,405 @@ void tetris()
       else toggle=false;
       run(p,m,n);
     }
-     /*else if(control==52)
+    else if(control==49)
+    {run(p,m,n);
+	}
+     else if(control==48)
     {
-      
+      while(Serial.available()==0)
+      {
+      	display();
+      	if(p==0)
+      	{
+      		if(!toggle)
+    {//registers[j+1]=LOW;
+    registers[j]=HIGH;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=HIGH;
+      }
     }
-    */
+    writereg();
+    registers[j]=LOW;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      { if(k==(26+(8*n)+m))continue;
+        else registers[k+8*l]=LOW;
+      }
+    }
+    registers[j+1]=HIGH;
+    writereg();
+    registers[j+1]=LOW;
+    for(int l=0;l<4;l++)
+      {int k=(26+(8*n)+m);registers[k+8*l]=LOW;}
+    writereg();
+    
+   }
+   
+   else
+   {
+   	registers[j+1]=HIGH;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=HIGH;
+      }
+    }
+    writereg();
+    registers[j+1]=LOW;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      { if(k==(26+(8*n)+m))continue;
+        else registers[k+8*l]=LOW;
+      }
+    }
+    registers[j]=HIGH;
+    writereg();
+    registers[j]=LOW;
+    for(int l=0;l<4;l++)
+      {int k=(26+(8*n)+m);registers[k+8*l]=LOW;}
+    writereg();
+    
+   }
+      	}
+      	else if(p==1)
+      	{if(!toggle)
+    {//registers[j]=LOW;
+    registers[j+1]=HIGH;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=HIGH;
+      }
+    }
+    writereg();
+    registers[j+1]=LOW;
+    int k=(26+(8*n)+m);
+    for(int l=0;l<4;l++)
+    {
+      registers[k+8*l]=LOW;
+    }
+    registers[j]=HIGH;
+    writereg();
+    
+    registers[j]=LOW;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=LOW;
+      }
+    }
+    writereg();
+   }
+   else
+   {
+   	registers[j]=HIGH;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=HIGH;
+      }
+    }
+    writereg();
+    registers[j]=LOW;
+    int k=(26+(8*n)+m);
+    for(int l=0;l<4;l++)
+    {
+      registers[k+8*l]=LOW;
+    }
+    registers[j+1]=HIGH;
+    writereg();
+    
+    registers[j+1]=LOW;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=LOW;
+      }
+    }
+    writereg();
+   }
+      	}
+      	else if(p==2)
+      	{
+      		if(!toggle)
+    {//registers[j]=LOW;
+    registers[j+1]=HIGH;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=HIGH;
+      }
+    }
+    writereg();
+
+    registers[j+1]=LOW;
+    int k=(26+(8*n)+m);
+    for(int l=0;l<4;l++)
+    {
+      registers[k+8*l]=LOW;
+      registers[k+3+8*l]=LOW;
+    }
+    registers[j]=HIGH;
+    writereg();
+    
+
+    registers[j]=LOW;
+    for(k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=LOW;
+      }
+    }
+    writereg();
+	}
+	else
+	{
+		registers[j]=HIGH;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=HIGH;
+      }
+    }
+    writereg();
+
+    registers[j]=LOW;
+    int k=(26+(8*n)+m);
+    for(int l=0;l<4;l++)
+    {
+      registers[k+8*l]=LOW;
+      registers[k+3+8*l]=LOW;
+    }
+    registers[j+1]=HIGH;
+    writereg();
+    
+
+    registers[j+1]=LOW;
+    for(k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=LOW;
+      }
+    }
+    writereg();
+	}
+      	}
+      	else if(p==3)
+      	{
+      		if(!toggle)
+    {//registers[j+1]=LOW;
+    registers[j]=HIGH;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=HIGH;
+      }
+    }
+    writereg();
+    registers[j]=LOW;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      { if(k==(26+(8*n)+m)||k==(29+(8*n)+m))continue;
+        else registers[k+8*l]=LOW;
+      }
+    }
+    registers[j+1]=HIGH;
+    writereg();
+
+    registers[j+1]=LOW;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=LOW;
+      }
+    }
+    writereg();
+    }
+    else
+    {
+    registers[j+1]=HIGH;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=HIGH;
+      }
+    }
+    writereg();
+    registers[j+1]=LOW;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      { if(k==(26+(8*n)+m)||k==(29+(8*n)+m))continue;
+        else registers[k+8*l]=LOW;
+      }
+    }
+    registers[j]=HIGH;
+    writereg();
+
+    registers[j]=LOW;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=LOW;
+      }
+    }
+    writereg();	
+    }
+      	}
+      	else if(p==4)
+      	{
+      		if(!toggle)
+    {//registers[j]=LOW;
+    registers[j+1]=HIGH;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=HIGH;
+      }
+    }
+    writereg();
+    registers[j+1]=LOW;
+    int k=(26+(8*n)+m);
+    for(int l=0;l<4;l++)
+    {
+      registers[k+8*l]=LOW;
+      registers[k+3+8*l]=LOW;
+    }
+    registers[k+25]=LOW;
+    registers[k+26]=LOW;
+    registers[k+1]=LOW;
+    registers[k+2]=LOW;
+
+    registers[j]=HIGH;
+    writereg();
+    
+
+    registers[j]=LOW;
+    for(k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=LOW;
+      }
+    }
+    writereg();
+    }
+    else
+    {
+    registers[j]=HIGH;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=HIGH;
+      }
+    }
+    writereg();
+    registers[j]=LOW;
+    int k=(26+(8*n)+m);
+    for(int l=0;l<4;l++)
+    {
+      registers[k+8*l]=LOW;
+      registers[k+3+8*l]=LOW;
+    }
+    registers[k+25]=LOW;
+    registers[k+26]=LOW;
+    registers[k+1]=LOW;
+    registers[k+2]=LOW;
+
+    registers[j+1]=HIGH;
+    writereg();
+    
+
+    registers[j+1]=LOW;
+    for(k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=LOW;
+      }
+    }
+    writereg();	
+    }
+      	}
+      	else if(p==5)
+      	{
+      		if(!toggle)
+    {//registers[j+1]=LOW;
+    registers[j]=HIGH;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=HIGH;
+      }
+    }
+    writereg();
+    registers[j]=LOW;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      { if(k==(26+(8*n)+m)||k==(29+(8*n)+m))continue;
+        else if(l!=0&l!=3)registers[k+8*l]=LOW;
+      }
+    }
+    registers[j+1]=HIGH;
+    writereg();
+
+    registers[j+1]=LOW;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=LOW;
+      }
+    }
+    writereg();
+    }
+    else
+    {
+    	registers[j+1]=HIGH;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=HIGH;
+      }
+    }
+    writereg();
+    registers[j+1]=LOW;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      { if(k==(26+(8*n)+m)||k==(29+(8*n)+m))continue;
+        else if(l!=0&l!=3)registers[k+8*l]=LOW;
+      }
+    }
+    registers[j]=HIGH;
+    writereg();
+
+    registers[j]=LOW;
+    for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
+    { for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=LOW;
+      }
+    }
+    writereg();
+    }
+      	}
+      	else if(p==6)
+      	{
+      		registers[j]=HIGH;
+    for(int l=0;l<4;l++)
+    {
+    	int k=(27+(8*n)+m);
+    	registers[k+8*l]=HIGH;
+    }
+    writereg();
+    registers[j]=LOW;
+    for(int l=0;l<4;l++)
+    {
+    	int k=(27+(8*n)+m);
+    	registers[k+8*l]=LOW;
+    }
+    writereg();
+      	}
+      }
+    }
+    
   }
 }
