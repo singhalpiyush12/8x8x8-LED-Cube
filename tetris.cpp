@@ -101,10 +101,30 @@ void stationary(int pillar,int level)
   }
   */
   if(l[level]==64)
-  {
-    l[level]=0;
+  { int a=level;while(a>0)
+    {l[a]=l[a-1];
     for(int i=0;i<64;i++)
-    {myvector[level][i]=myvector[level-1][i];myvector[level-1][i]=0;}
+    {myvector[a][i]=myvector[a-1][i];}
+	a--;  
+  }for(int i=0;i<64;i++)
+    {myvector[0][i]=0;}l[0]=0;
+}
+}
+void display()
+{
+	for(int i=0;i<8;i++)
+  {int a=0;registers[i]=HIGH;
+    while(myvector[i][a]!=0)
+      {registers[myvector[i][a]]=HIGH;
+        a++;
+      }
+      writereg();
+    a=0;registers[i]=LOW;
+    while(myvector[i][a]!=0)
+      {registers[myvector[i][a]]=LOW;
+        a++;
+      }
+      writereg(); 
   }
 }
 void fig1(int m, int n)//one on in lower and all on in upper 
@@ -145,20 +165,7 @@ void fig1(int m, int n)//one on in lower and all on in upper
         registers[k+8*l]=LOW;
       }
     }
-    for(int i=0;i<8;i++)
-  {int a=0;registers[i]=HIGH;
-    while(myvector[i][a]!=0)
-      {registers[myvector[i][a]]=HIGH;
-        a++;
-      }
-      writereg();
-    a=0;registers[i]=LOW;
-    while(myvector[i][a]!=0)
-      {registers[myvector[i][a]]=LOW;
-        a++;
-      }
-      writereg(); 
-  }
+    display();
     if(!toggle)
     {//registers[j+1]=LOW;
     registers[j]=HIGH;
@@ -211,16 +218,30 @@ void fig1(int m, int n)//one on in lower and all on in upper
     
    }
    i++;
-}
-   for(int l=0;l<4;l++)
+} 
+   if(!toggle)
+   {for(int l=0;l<4;l++)
   {int a=0;while(myvector[j+2][a]!=0)
     {int b=26+(8*n)+m+8*l;
-      if(b==myvector[j+2][a])
+      if(b==myvector[j+2][a]||b+3==myvector[j+1][a])
       {p=false;
-      stop=true;
+      stop=true;break;
       }
       a++;
-    }
+    }if(!p)break;
+  }}
+  else
+  {
+  	for(int l=0;l<4;l++)
+  {int a=0;while(myvector[j+2][a]!=0)
+    {int b=26+(8*n)+m+8*l;
+      if(b==myvector[j+2][a]||b+3==myvector[j+2][a])
+      {p=false;
+      stop=true;break;
+      }
+      a++;
+    }if(!p)break;
+  }
   }
 
   j++;if(j==7){stop=true;}
@@ -278,20 +299,7 @@ void fig1comple(int m,int n)//one off on upper else on
         registers[k+8*l]=LOW;
       }
     }
-    for(int i=0;i<8;i++)
-  {int a=0;registers[i]=HIGH;
-    while(myvector[i][a]!=0)
-      {registers[myvector[i][a]]=HIGH;
-        a++;
-      }
-      writereg();
-    a=0;registers[i]=LOW;
-    while(myvector[i][a]!=0)
-      {registers[myvector[i][a]]=LOW;
-        a++;
-      }
-      writereg(); 
-  } 
+    display();
     if(!toggle)
     {//registers[j]=LOW;
     registers[j+1]=HIGH;
@@ -350,15 +358,30 @@ void fig1comple(int m,int n)//one off on upper else on
    }
    i++;
    }
-  for(int l=0;l<4;l++)
+   if(!toggle)
+  {for(int l=0;l<4;l++)
   {int a=0;while(myvector[j+2][a]!=0)
     {int b=26+(8*n)+m+8*l;
       if(b==myvector[j+2][a]||b+3==myvector[j+2][a])
       {p=false;
-      stop=true;
+      stop=true;break;
       }
       a++;
-    }
+    }if(!p)break;
+  }
+  }
+  else
+  {
+  	for(int l=0;l<4;l++)
+  {int a=0;while(myvector[j+2][a]!=0)
+    {int b=26+(8*n)+m+8*l;
+      if(b==myvector[j+1][a]||b+3==myvector[j+2][a])
+      {p=false;
+      stop=true;break;
+      }
+      a++;
+    }if(!p)break;
+  }
   }
   j++;if(j==7){stop=true;}
 
@@ -416,20 +439,7 @@ void fig2(int m,int n)//middle two on top layer on and base on
         registers[k+8*l]=LOW;
       }
     }
-    for(int i=0;i<8;i++)
-  {int a=0;registers[i]=HIGH;
-    while(myvector[i][a]!=0)
-      {registers[myvector[i][a]]=HIGH;
-        a++;
-      }
-      writereg();
-    a=0;registers[i]=LOW;
-    while(myvector[i][a]!=0)
-      {registers[myvector[i][a]]=LOW;
-        a++;
-      }
-      writereg(); 
-  }
+    display();
     if(!toggle)
     {//registers[j]=LOW;
     registers[j+1]=HIGH;
@@ -494,16 +504,30 @@ void fig2(int m,int n)//middle two on top layer on and base on
 	}
     i++;
    }
-
+   if(!toggle)
+   {
   for(int l=0;l<4;l++)
   {int a=0;while(myvector[j+2][a]!=0)
     {int b=26+(8*n)+m+8*l;
       if(b==myvector[j+2][a]||b+3==myvector[j+2][a])
       {p=false;
-      stop=true;
+      stop=true;break;
       }
       a++;
-    }
+    }if(!p)break;
+  }}
+  else
+  {
+  	for(int l=0;l<4;l++)
+  {int a=0;while(myvector[j+2][a]!=0)
+    {int b=26+(8*n)+m+8*l;
+      if(b+1==myvector[j+2][a]||b+2==myvector[j+2][a]||b==myvector[j+1][a]||b+3==myvector[j+1][a])
+      {p=false;
+      stop=true;break;
+      }
+      a++;
+    }if(!p)break;
+  }
   }
 
   j++;if(j==7){stop=true;}
@@ -562,20 +586,7 @@ void fig2comple(int m, int n)//lower base middle off upper base all on
         registers[k+8*l]=LOW;
       }
     }
-    for(int i=0;i<8;i++)
-  {int a=0;registers[i]=HIGH;
-    while(myvector[i][a]!=0)
-      {registers[myvector[i][a]]=HIGH;
-        a++;
-      }
-      writereg();
-    a=0;registers[i]=LOW;
-    while(myvector[i][a]!=0)
-      {registers[myvector[i][a]]=LOW;
-        a++;
-      }
-      writereg(); 
-  }
+    display();
     if(!toggle)
     {//registers[j+1]=LOW;
     registers[j]=HIGH;
@@ -636,16 +647,16 @@ void fig2comple(int m, int n)//lower base middle off upper base all on
     }
     i++;
    }
-
+  
   for(int l=0;l<4;l++)
   {int a=0;while(myvector[j+2][a]!=0)
     {int b=26+(8*n)+m+8*l;
       if(b==myvector[j+2][a]||b+3==myvector[j+2][a])
       {p=false;
-      stop=true;
+      stop=true;break;
       }
       a++;
-    }
+    }if(!p)break;
   }
 
   j++;if(j==7){stop=true;}
@@ -707,20 +718,7 @@ void fig3(int m,int n)//middle two on top layer on and base on
         registers[k+8*l]=LOW;
       }
     }
-    for(int i=0;i<8;i++)
-  {int a=0;registers[i]=HIGH;
-    while(myvector[i][a]!=0)
-      {registers[myvector[i][a]]=HIGH;
-        a++;
-      }
-      writereg();
-    a=0;registers[i]=LOW;
-    while(myvector[i][a]!=0)
-      {registers[myvector[i][a]]=LOW;
-        a++;
-      }
-      writereg(); 
-  } 
+    display();
   	if(!toggle)
     {//registers[j]=LOW;
     registers[j+1]=HIGH;
@@ -793,31 +791,53 @@ void fig3(int m,int n)//middle two on top layer on and base on
     }
     i++;
    }
-
-  for(int l=0;l<4;l++)
+   if(j==6){stop=true;}
+  if(!toggle)
+  {for(int l=0;l<4;l++)
   {int a=0;while(myvector[j+2][a]!=0)
     {int b=26+(8*n)+m+8*l;
       if(b==myvector[j+2][a]||b+3==myvector[j+2][a])
       {p=false;
-      stop=true;
+      stop=true;break;
+      }
+      a++;
+    }if(!p)break;
+  }
+  }
+  else
+  {
+  	int a=0;while(myvector[j+2][a]!=0)
+    {int b=26+(8*n)+m;
+      if(b+9==myvector[j+2][a]||b+10==myvector[j+2][a]||b+17==myvector[j+2][a]||b+18==myvector[j+2][a])
+      {p=false;
+      stop=true;break;
       }
       a++;
     }
+    for(int l=0;l<4;l++)
+  {int c=0;while(myvector[j+1][c]!=0)
+    {int b=26+(8*n)+m+8*l;
+      if(b==myvector[j+1][c]||b+3==myvector[j+1][c])
+      {p=false;
+      stop=true;break;
+      }
+      c++;
+    }if(!p)break;
   }
-
-  j++;if(j==7){stop=true;}
+  }
+  j++;
 
   if(stop==true)
   { for(int l=1;l<3;l++)
     {int b=26+(8*n)+m+8*l;
     	if(!toggle)
       {stationary(b+1,j-1);
-      stationary(b+2,j);
+      stationary(b+2,j-1);
       }
       else
       {
       	stationary(b+1,j);
-      stationary(b+2,j-1);
+      stationary(b+2,j);
       }
     }
     for(int a=26+(8*n)+m;a<30+(8*n)+m;a++)
@@ -825,7 +845,7 @@ void fig3(int m,int n)//middle two on top layer on and base on
         { if(!toggle)
           stationary(a+8*l,j);
           else
-          	stationary(a+8*l,j-1);
+          	{stationary(a+8*l,j-1);}
         }
       }
       tetris();
@@ -865,20 +885,7 @@ void fig3comple(int m, int n)//lower base middle off upper base all on
         registers[k+8*l]=LOW;
       }
     }
-    for(int i=0;i<8;i++)
-  {int a=0;registers[i]=HIGH;
-    while(myvector[i][a]!=0)
-      {registers[myvector[i][a]]=HIGH;
-        a++;
-      }
-      writereg();
-    a=0;registers[i]=LOW;
-    while(myvector[i][a]!=0)
-      {registers[myvector[i][a]]=LOW;
-        a++;
-      }
-      writereg(); 
-  }
+    display();
   	if(!toggle)
     {//registers[j+1]=LOW;
     registers[j]=HIGH;
@@ -945,10 +952,10 @@ void fig3comple(int m, int n)//lower base middle off upper base all on
     {int b=26+(8*n)+m+8*l;
       if(b==myvector[j+2][a]||b+3==myvector[j+2][a])
       {p=false;
-      stop=true;
+      stop=true;break;
       }
       a++;
-    }
+    }if(!p)break;
   }
 
   j++;if(j==7){stop=true;}
@@ -966,17 +973,17 @@ void fig3comple(int m, int n)//lower base middle off upper base all on
           stationary(a+3+8*l,j-1);
       	  }
         } if(!toggle)
-          {stationary(a+8*1,j);
-          stationary(a+3+8*1,j);
-          stationary(a+8*2,j);
-          stationary(a+3+8*2,j);
+          {stationary(a+1,j);
+          stationary(a+1+8*3,j);
+          stationary(a+2,j);
+          stationary(a+2+8*3,j);
           }
           else
           {
-          	stationary(a+8*1,j-1);
-          stationary(a+3+8*1,j-1);
-          stationary(a+8*2,j-1);
-          stationary(a+3+8*2,j-1);
+          stationary(a+1,j-1);
+          stationary(a+1+8*3,j-1);
+          stationary(a+2,j-1);
+          stationary(a+2+8*3,j-1);
           }
     for(int a=26+(8*n)+m;a<30+(8*n)+m;a++)
       {for(int l=0;l<4;l++)
@@ -990,6 +997,78 @@ void fig3comple(int m, int n)//lower base middle off upper base all on
   }
 
   }
+}
+void figrow(int m,int n)
+{
+	bool p=true;bool stop=false;
+  while(p==true&Serial.available()==0)
+  { int i=0;
+    while(i<100)
+   { if(down)
+    { int k=(27+(8*(n+4))+m);
+      registers[k]=LOW;
+      down=false;
+    }
+    else if(up)
+    { up=false;
+      int k=(27+(8*(n-1))+m);
+      registers[k]=LOW;
+    }
+    if(left)
+    { left=false;
+      int k=(28+(8*n)+m);
+      for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=LOW;
+      }
+    }
+    else if(right)
+    { right=false;
+      int k=(26+(8*n)+m);
+      for(int l=0;l<4;l++)
+      {
+        registers[k+8*l]=LOW;
+      }
+    }
+    display();
+    registers[j]=HIGH;
+    for(int l=0;l<4;l++)
+    {
+    	int k=(27+(8*n)+m);
+    	registers[k+8*l]=HIGH;
+    }
+    writereg();
+    registers[j]=LOW;
+    for(int l=0;l<4;l++)
+    {
+    	int k=(27+(8*n)+m);
+    	registers[k+8*l]=LOW;
+    }
+    writereg();
+    i++;
+    
+}
+ for(int l=0;l<4;l++)
+  {int a=0;while(myvector[j+1][a]!=0)
+    {int b=27+(8*n)+m+8*l;
+      if(b==myvector[j+1][a])
+      {p=false;
+      stop=true;break;
+      }
+      a++;
+    }if(!p)break;
+  }
+j++;if(j==8){stop=true;}
+if(stop==true)
+{
+	for(int l=0;l<4;l++)
+    {
+    	int k=(27+(8*n)+m);
+    	stationary(k+8*l,j-1);
+    }
+    tetris();
+}
+}
 }
 void run(int p,int m,int n)
 {
@@ -1006,11 +1085,13 @@ void run(int p,int m,int n)
     fig3(m,n);
   else if(p==5)
     fig3comple(m,n);
+  else if(p==6)
+    figrow(m,n);
 }
 
 void tetris()
 { 
-  int m=0,n=0;j=0;int p=random(0,6);run(p,m,n);
+  int m=0,n=0;j=0;int p=random(0,7);run(p,m,n);
   while(Serial.available() > 0)
   {
     int control=Serial.read();
@@ -1022,13 +1103,15 @@ void tetris()
     }
     else if(control==52)
     { left=true;
-      m--;if(m<-2){m = -2;left=false;run(p,m,n);}
-      else run(p,m,n);
+      m--;if(p!=6){if(m<-2){m = -2;left=false;run(p,m,n);}else run(p,m,n);}
+      else{if(m<-3){m = -3;left=false;run(p,m,n);}else run(p,m,n);}
+      
     }
     else if(control==54)
     { right=true;
-      m++;if(m>2){m = 2;right=false;run(p,m,n);}
-      else run(p,m,n);
+      m++;if(p!=6){if(m>2){m = 2;right=false;run(p,m,n);}else run(p,m,n);}
+      else{if(m>4){m = 4;right=false;run(p,m,n);}else run(p,m,n);}
+      
     }
     else if(control==56)
     { up=true;
