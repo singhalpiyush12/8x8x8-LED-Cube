@@ -1,6 +1,12 @@
-int DS_pin =51;
-int LATCH_pin = 33;
-int Clock_pin = 52;
+#include <LiquidCrystal.h>
+
+// initialize the library by associating any needed LCD interface pin
+// with the arduino pin number it is connected to
+const int rs = 50, en = 51, d4 = 4, d5 = 5, d6 = 6, d7 = 7;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+int DS_pin =23;
+int LATCH_pin = 22;
+int Clock_pin = 24;
 boolean registers[72];
 int dir;
 
@@ -11,6 +17,9 @@ void setup()
   pinMode(LATCH_pin, OUTPUT);
   pinMode(Clock_pin, OUTPUT);
   writereg();
+  randomSeed(analogRead(0));
+  lcd.begin(16, 2);
+  lcd.print("Score");
 }
 
 
@@ -92,6 +101,7 @@ void EveryOff()
 }
 void Snake()
 { //LED(0,0,0);
+  
   int n=1;int l=random(0,8);int p=random(8,72);
   EveryOff();  
   registers[l]=HIGH;registers[p]=HIGH;
@@ -113,7 +123,7 @@ void Snake()
         led(a,b,c,n,l,p);
         //delay(2000);
         if(7-a[n-1]==l&(((8*c[n-1])+b[n-1])+8)==p)
-          {n++;a[n-1]=a[n-2];b[n-1]=b[n-2];c[n-1]=c[n-2];
+          {n++;a[n-1]=a[n-2];b[n-1]=b[n-2];c[n-1]=c[n-2]-1;led(a,b,c,n,l,p);
             registers[l]=LOW;registers[p]=LOW;
             l=random(0,8);p=random(8,72);
               registers[l]=HIGH;registers[p]=HIGH;
@@ -121,7 +131,7 @@ void Snake()
         if(Serial.available()>0)
           break;
       if(c[n-1]<0)
-      {Serial.println("GameOver!!!");break;}
+      {Serial.println("GameOver!!!");lcd.setCursor(0, 0);lcd.print("GameOver!!!");break;}
        }
     }
     else if(dir==56)
@@ -140,7 +150,7 @@ void Snake()
         if(Serial.available()>0)
           break;
       if(c[n-1]>7)
-      {Serial.println("GameOver!!!");break;}
+      {Serial.println("GameOver!!!");lcd.setCursor(0, 0);lcd.print("GameOver!!!");break;}
        }
     }
     else if(dir==52)
@@ -152,14 +162,14 @@ void Snake()
         led(a,b,c,n,l,p);
         //delay(2000);
         if(7-a[n-1]==l&(((8*c[n-1])+b[n-1])+8)==p)
-          {n++;a[n-1]=a[n-2];b[n-1]=b[n-2];c[n-1]=c[n-2];led(a,b,c,n,l,p);registers[l]=LOW;registers[p]=LOW;
+          {n++;a[n-1]=a[n-2];b[n-1]=b[n-2]-1;c[n-1]=c[n-2];led(a,b,c,n,l,p);registers[l]=LOW;registers[p]=LOW;
             l=random(0,8);p=random(8,72);
               registers[l]=HIGH;registers[p]=HIGH;
               writereg();x=dir;}
         if(Serial.available()>0)
           break;
       if(b[n-1]<0)
-      {Serial.println("GameOver!!!");break;}
+      {Serial.println("GameOver!!!");lcd.setCursor(0, 0);lcd.print("GameOver!!!");break;}
        }
     }
     else if(dir==54)
@@ -178,10 +188,10 @@ void Snake()
         if(Serial.available()>0)
           break;
       if(b[n-1]>7)
-      {Serial.println("GameOver!!!");break;}
+      {Serial.println("GameOver!!!");lcd.setCursor(0, 0);lcd.print("GameOver!!!");break;}
        }
     }
-    else if(dir==48)
+    else if(dir==49)
     {
        while(true)
        {for(int i=0;i<n-1;i++)
@@ -190,14 +200,14 @@ void Snake()
         led(a,b,c,n,l,p);
         //delay(2000);
         if(7-a[n-1]==l&(((8*c[n-1])+b[n-1])+8)==p)
-          {n++;a[n-1]=a[n-2];b[n-1]=b[n-2];c[n-1]=c[n-2];led(a,b,c,n,l,p);registers[l]=LOW;registers[p]=LOW;
+          {n++;a[n-1]=a[n-2]-1;b[n-1]=b[n-2];c[n-1]=c[n-2];led(a,b,c,n,l,p);registers[l]=LOW;registers[p]=LOW;
             l=random(0,8);p=random(8,72);
               registers[l]=HIGH;registers[p]=HIGH;
               writereg();x=dir;}
         if(Serial.available()>0)
           break;
       if(a[n-1]<0)
-      {Serial.println("GameOver!!!");break;}
+      {Serial.println("GameOver!!!");lcd.setCursor(0, 0);lcd.print("GameOver!!!");break;}
        }
     }
     else if(dir==53)
@@ -216,13 +226,18 @@ void Snake()
         if(Serial.available()>0)
           break;
       if(a[n-1]>7)
-      {Serial.println("GameOver!!!");break;}
+      {Serial.println("GameOver!!!");lcd.setCursor(0, 0);lcd.print("GameOver!!!");break;}
        }
+    }
+    else if(dir==48)
+    {
+      while(Serial.available()==0)
+        {led(a,b,c,n,l,p);}
     }
   }
 }
 void led(int a[],int b[],int c[],int n,int l,int p)
-{int i=0;
+{int i=0;lcd.setCursor(0, 0);lcd.print("Score      ");lcd.setCursor(0, 1);lcd.print(n);
   while(i<20*(15-n))
   { for(int j=0;j<n;j++)
     {if((7-a[j])!=l&(((8*c[j])+b[j])+8)!=p)
