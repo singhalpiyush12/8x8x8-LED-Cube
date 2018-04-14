@@ -1,12 +1,17 @@
+#include <LiquidCrystal.h>
 
-int DS_pin =51;
-int LATCH_pin = 33;
-int Clock_pin = 52;
+// initialize the library by associating any needed LCD interface pin
+// with the arduino pin number it is connected to
+const int rs = 50, en = 51, d4 = 4, d5 = 5, d6 = 6, d7 = 7;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+int DS_pin =23;
+int LATCH_pin = 22;
+int Clock_pin = 24;
 boolean registers[72];
 int j;int l[8];
 bool right=false,left=false,up=false,down=false,toggle=false;
 int myvector[8][64];
-
+int score;
 
 void setup()
 { Serial.begin(9600);
@@ -14,7 +19,9 @@ void setup()
   pinMode(LATCH_pin, OUTPUT);
   pinMode(Clock_pin, OUTPUT);
   writereg();
-  
+  randomSeed(analogRead(0));
+  lcd.begin(16, 2);
+  lcd.print("Score");
 }
 
 
@@ -62,7 +69,9 @@ void LED(int level, int row, int column){
 }
 
 void loop()
-{for(int i=0;i<8;i++)
+{
+  score=0;
+  for(int i=0;i<8;i++)
 {
   for(int j=0;j<64;j++)
     myvector[i][j]=0;
@@ -125,15 +134,16 @@ void stationary(int pillar,int level)
     {l[a]=l[a-1];
     for(int i=0;i<64;i++)
     {myvector[a][i]=myvector[a-1][i];}
-	a--;  
+  a--;  
   }for(int i=0;i<64;i++)
     {myvector[0][i]=0;}l[0]=0;
+    score++;
 }
-if(l[0]>0){Flicker();}
+if(l[0]>0){Flicker();lcd.print("GameOver!!");}
 }
 void display()
 {
-	for(int i=0;i<8;i++)
+  for(int i=0;i<8;i++)
   {int a=0;registers[i]=HIGH;
     while(myvector[i][a]!=0)
       {registers[myvector[i][a]]=HIGH;
@@ -147,6 +157,7 @@ void display()
       }
       writereg(); 
   }
+  lcd.setCursor(0, 1);lcd.print(score);
 }
 void fig1(int m, int n)//one on in lower and all on in upper 
 { 
@@ -215,7 +226,7 @@ void fig1(int m, int n)//one on in lower and all on in upper
    
    else
    {
-   	registers[j+1]=HIGH;
+    registers[j+1]=HIGH;
     for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
     { for(int l=0;l<4;l++)
       {
@@ -253,7 +264,7 @@ void fig1(int m, int n)//one on in lower and all on in upper
   }}
   else
   {
-  	for(int l=0;l<4;l++)
+    for(int l=0;l<4;l++)
   {int a=0;while(myvector[j+2][a]!=0)
     {int b=26+(8*n)+m+8*l;
       if(b==myvector[j+2][a]||b+3==myvector[j+2][a])
@@ -270,17 +281,17 @@ void fig1(int m, int n)//one on in lower and all on in upper
   if(stop==true)
   { for(int l=0;l<4;l++)
     {int b=26+(8*n)+m+8*l;
-    	if(!toggle)
+      if(!toggle)
       stationary(b,j);
-  		else
-  		stationary(b,j-1);	
+      else
+      stationary(b,j-1);  
     }
     for(int a=26+(8*n)+m;a<30+(8*n)+m;a++)
       {for(int l=0;l<4;l++)
         { if(!toggle)
           stationary(a+8*l,j-1);
           else
-          	stationary(a+8*l,j);
+            stationary(a+8*l,j);
         }
       }
       tetris();
@@ -351,7 +362,7 @@ void fig1comple(int m,int n)//one off on upper else on
    }
    else
    {
-   	registers[j]=HIGH;
+    registers[j]=HIGH;
     for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
     { for(int l=0;l<4;l++)
       {
@@ -393,7 +404,7 @@ void fig1comple(int m,int n)//one off on upper else on
   }
   else
   {
-  	for(int l=0;l<4;l++)
+    for(int l=0;l<4;l++)
   {int a=0;while(myvector[j+2][a]!=0)
     {int b=26+(8*n)+m+8*l;
       if(b==myvector[j+1][a]||b+3==myvector[j+2][a])
@@ -412,7 +423,7 @@ void fig1comple(int m,int n)//one off on upper else on
         { if(!toggle)
           stationary(a+8*l,j-1);
           else
-          	stationary(a+8*l,j);
+            stationary(a+8*l,j);
         }
       }
     for(int a=26+(8*n)+m;a<30+(8*n)+m;a++)
@@ -420,7 +431,7 @@ void fig1comple(int m,int n)//one off on upper else on
         { if(!toggle)
           stationary(a+8*l,j);
           else
-          	stationary(a+8*l,j-1);
+            stationary(a+8*l,j-1);
         }
       }
       tetris();
@@ -491,10 +502,10 @@ void fig2(int m,int n)//middle two on top layer on and base on
       }
     }
     writereg();
-	}
-	else
-	{
-		registers[j]=HIGH;
+  }
+  else
+  {
+    registers[j]=HIGH;
     for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
     { for(int l=0;l<4;l++)
       {
@@ -522,7 +533,7 @@ void fig2(int m,int n)//middle two on top layer on and base on
       }
     }
     writereg();
-	}
+  }
     i++;
    }
    if(!toggle)
@@ -539,7 +550,7 @@ void fig2(int m,int n)//middle two on top layer on and base on
   }}
   else
   {
-  	for(int l=0;l<4;l++)
+    for(int l=0;l<4;l++)
   {int a=0;while(myvector[j+2][a]!=0)
     {int b=26+(8*n)+m+8*l;
       if(b+1==myvector[j+2][a]||b+2==myvector[j+2][a]||b==myvector[j+1][a]||b+3==myvector[j+1][a])
@@ -559,7 +570,7 @@ void fig2(int m,int n)//middle two on top layer on and base on
         { if(!toggle)
           stationary(a+8*l,j-1);
           else
-          	stationary(a+8*l,j);
+            stationary(a+8*l,j);
         }
       }
     for(int a=26+(8*n)+m;a<30+(8*n)+m;a++)
@@ -567,7 +578,7 @@ void fig2(int m,int n)//middle two on top layer on and base on
         { if(!toggle)
           stationary(a+8*l,j);
           else
-          	stationary(a+8*l,j-1);
+            stationary(a+8*l,j-1);
         }
       }
       tetris();
@@ -664,7 +675,7 @@ void fig2comple(int m, int n)//lower base middle off upper base all on
         registers[k+8*l]=LOW;
       }
     }
-    writereg();	
+    writereg(); 
     }
     i++;
    }
@@ -685,12 +696,12 @@ void fig2comple(int m, int n)//lower base middle off upper base all on
   if(stop==true)
   { for(int l=0;l<4;l++)
     {int b=26+(8*n)+m+8*l;
-    	if(!toggle)
+      if(!toggle)
       {stationary(b,j);
       stationary(b+3,j);}
       else
       {
-      	stationary(b,j-1);
+        stationary(b,j-1);
       stationary(b+3,j-1);
       }
     }
@@ -699,7 +710,7 @@ void fig2comple(int m, int n)//lower base middle off upper base all on
         { if(!toggle)
           stationary(a+8*l,j-1);
           else
-          	stationary(a+8*l,j);
+            stationary(a+8*l,j);
         }
       }
       tetris();
@@ -740,7 +751,7 @@ void fig3(int m,int n)//middle two on top layer on and base on
       }
     }
     display();
-  	if(!toggle)
+    if(!toggle)
     {//registers[j]=LOW;
     registers[j+1]=HIGH;
     for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
@@ -808,7 +819,7 @@ void fig3(int m,int n)//middle two on top layer on and base on
         registers[k+8*l]=LOW;
       }
     }
-    writereg();	
+    writereg(); 
     }
     i++;
    }
@@ -827,7 +838,7 @@ void fig3(int m,int n)//middle two on top layer on and base on
   }
   else
   {
-  	int a=0;while(myvector[j+2][a]!=0)
+    int a=0;while(myvector[j+2][a]!=0)
     {int b=26+(8*n)+m;
       if(b+9==myvector[j+2][a]||b+10==myvector[j+2][a]||b+17==myvector[j+2][a]||b+18==myvector[j+2][a])
       {p=false;
@@ -851,13 +862,13 @@ void fig3(int m,int n)//middle two on top layer on and base on
   if(stop==true)
   { for(int l=1;l<3;l++)
     {int b=26+(8*n)+m+8*l;
-    	if(!toggle)
+      if(!toggle)
       {stationary(b+1,j-1);
       stationary(b+2,j-1);
       }
       else
       {
-      	stationary(b+1,j);
+        stationary(b+1,j);
       stationary(b+2,j);
       }
     }
@@ -866,7 +877,7 @@ void fig3(int m,int n)//middle two on top layer on and base on
         { if(!toggle)
           stationary(a+8*l,j);
           else
-          	{stationary(a+8*l,j-1);}
+            {stationary(a+8*l,j-1);}
         }
       }
       tetris();
@@ -907,7 +918,7 @@ void fig3comple(int m, int n)//lower base middle off upper base all on
       }
     }
     display();
-  	if(!toggle)
+    if(!toggle)
     {//registers[j+1]=LOW;
     registers[j]=HIGH;
     for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
@@ -938,7 +949,7 @@ void fig3comple(int m, int n)//lower base middle off upper base all on
     }
     else
     {
-    	registers[j+1]=HIGH;
+      registers[j+1]=HIGH;
     for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
     { for(int l=0;l<4;l++)
       {
@@ -987,12 +998,12 @@ void fig3comple(int m, int n)//lower base middle off upper base all on
         { if(!toggle)
           {stationary(a+8*l,j);
           stationary(a+3+8*l,j);
-      	  }
-      	  else
-      	  {
-      	  stationary(a+8*l,j-1);
+          }
+          else
+          {
+          stationary(a+8*l,j-1);
           stationary(a+3+8*l,j-1);
-      	  }
+          }
         } if(!toggle)
           {stationary(a+1,j);
           stationary(a+1+8*3,j);
@@ -1011,7 +1022,7 @@ void fig3comple(int m, int n)//lower base middle off upper base all on
         { if(!toggle)
           stationary(a+8*l,j-1);
           else
-          	stationary(a+8*l,j);
+            stationary(a+8*l,j);
         }
       }
       tetris();
@@ -1021,7 +1032,7 @@ void fig3comple(int m, int n)//lower base middle off upper base all on
 }
 void figrow(int m,int n)
 {
-	bool p=true;bool stop=false;
+  bool p=true;bool stop=false;
   while(p==true&Serial.available()==0)
   { int i=0;
     while(i<100)
@@ -1055,15 +1066,15 @@ void figrow(int m,int n)
     registers[j]=HIGH;
     for(int l=0;l<4;l++)
     {
-    	int k=(27+(8*n)+m);
-    	registers[k+8*l]=HIGH;
+      int k=(27+(8*n)+m);
+      registers[k+8*l]=HIGH;
     }
     writereg();
     registers[j]=LOW;
     for(int l=0;l<4;l++)
     {
-    	int k=(27+(8*n)+m);
-    	registers[k+8*l]=LOW;
+      int k=(27+(8*n)+m);
+      registers[k+8*l]=LOW;
     }
     writereg();
     i++;
@@ -1082,10 +1093,10 @@ void figrow(int m,int n)
 j++;if(j==8){stop=true;}
 if(stop==true)
 {
-	for(int l=0;l<4;l++)
+  for(int l=0;l<4;l++)
     {
-    	int k=(27+(8*n)+m);
-    	stationary(k+8*l,j-1);
+      int k=(27+(8*n)+m);
+      stationary(k+8*l,j-1);
     }
     tetris();
 }
@@ -1116,7 +1127,7 @@ void tetris()
   while(Serial.available() > 0)
   {
     int control=Serial.read();
-
+    Serial.println(control);
     if(control==50)
     { down=true;
       n--;if(n<-2){n = -2;down=false;run(p,m,n);}
@@ -1145,17 +1156,17 @@ void tetris()
       else toggle=false;
       run(p,m,n);
     }
-    else if(control==49)
+    else if(control==48 )
     {run(p,m,n);
-	}
-     else if(control==48)
+  }
+     else if(control==49)
     {
       while(Serial.available()==0)
       {
-      	display();
-      	if(p==0)
-      	{
-      		if(!toggle)
+        display();
+        if(p==0)
+        {
+          if(!toggle)
     {//registers[j+1]=LOW;
     registers[j]=HIGH;
     for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
@@ -1183,7 +1194,7 @@ void tetris()
    
    else
    {
-   	registers[j+1]=HIGH;
+    registers[j+1]=HIGH;
     for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
     { for(int l=0;l<4;l++)
       {
@@ -1206,9 +1217,9 @@ void tetris()
     writereg();
     
    }
-      	}
-      	else if(p==1)
-      	{if(!toggle)
+        }
+        else if(p==1)
+        {if(!toggle)
     {//registers[j]=LOW;
     registers[j+1]=HIGH;
     for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
@@ -1238,7 +1249,7 @@ void tetris()
    }
    else
    {
-   	registers[j]=HIGH;
+    registers[j]=HIGH;
     for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
     { for(int l=0;l<4;l++)
       {
@@ -1264,10 +1275,10 @@ void tetris()
     }
     writereg();
    }
-      	}
-      	else if(p==2)
-      	{
-      		if(!toggle)
+        }
+        else if(p==2)
+        {
+          if(!toggle)
     {//registers[j]=LOW;
     registers[j+1]=HIGH;
     for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
@@ -1297,10 +1308,10 @@ void tetris()
       }
     }
     writereg();
-	}
-	else
-	{
-		registers[j]=HIGH;
+  }
+  else
+  {
+    registers[j]=HIGH;
     for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
     { for(int l=0;l<4;l++)
       {
@@ -1328,11 +1339,11 @@ void tetris()
       }
     }
     writereg();
-	}
-      	}
-      	else if(p==3)
-      	{
-      		if(!toggle)
+  }
+        }
+        else if(p==3)
+        {
+          if(!toggle)
     {//registers[j+1]=LOW;
     registers[j]=HIGH;
     for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
@@ -1388,12 +1399,12 @@ void tetris()
         registers[k+8*l]=LOW;
       }
     }
-    writereg();	
+    writereg(); 
     }
-      	}
-      	else if(p==4)
-      	{
-      		if(!toggle)
+        }
+        else if(p==4)
+        {
+          if(!toggle)
     {//registers[j]=LOW;
     registers[j+1]=HIGH;
     for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
@@ -1461,12 +1472,12 @@ void tetris()
         registers[k+8*l]=LOW;
       }
     }
-    writereg();	
+    writereg(); 
     }
-      	}
-      	else if(p==5)
-      	{
-      		if(!toggle)
+        }
+        else if(p==5)
+        {
+          if(!toggle)
     {//registers[j+1]=LOW;
     registers[j]=HIGH;
     for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
@@ -1497,7 +1508,7 @@ void tetris()
     }
     else
     {
-    	registers[j+1]=HIGH;
+      registers[j+1]=HIGH;
     for(int k=(26+(8*n)+m);k<(30+(8*n)+m);k++)
     { for(int l=0;l<4;l++)
       {
@@ -1524,24 +1535,24 @@ void tetris()
     }
     writereg();
     }
-      	}
-      	else if(p==6)
-      	{
-      		registers[j]=HIGH;
+        }
+        else if(p==6)
+        {
+          registers[j]=HIGH;
     for(int l=0;l<4;l++)
     {
-    	int k=(27+(8*n)+m);
-    	registers[k+8*l]=HIGH;
+      int k=(27+(8*n)+m);
+      registers[k+8*l]=HIGH;
     }
     writereg();
     registers[j]=LOW;
     for(int l=0;l<4;l++)
     {
-    	int k=(27+(8*n)+m);
-    	registers[k+8*l]=LOW;
+      int k=(27+(8*n)+m);
+      registers[k+8*l]=LOW;
     }
     writereg();
-      	}
+        }
       }
     }
     
