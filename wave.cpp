@@ -1,6 +1,6 @@
-int DS_pin =51;
-int LATCH_pin = 33;
-int Clock_pin = 52;
+int DS_pin =23;
+int LATCH_pin = 22;
+int Clock_pin = 24;
 boolean registers[72];
 int dir;
 
